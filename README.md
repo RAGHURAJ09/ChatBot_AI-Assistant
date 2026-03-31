@@ -1,9 +1,8 @@
-# AI Assistant (ChatGPT Clone)
+# AI Assistant
 
 A full-stack AI-powered web application using ONLY free-tier services. 
 
 ## Features
-- ChatGPT-like UI with chat history
 - Chat persistence (PostgreSQL)
 - Retrieval-Augmented Generation (RAG) using HuggingFace models
 - Process PDF and YouTube videos for custom context
