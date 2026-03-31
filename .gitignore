@@ -1,0 +1,58 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg-info/
+*.egg
+*.dist-info/
+*.log
+*.sqlite3
+
+# Virtual environment
+venv/
+.env
+backend/test_*.py
+backend/test_*_output.txt
+backend/*.log
+backend/chat_output.txt
+backend/chroma_db/
+
+# IDE / editor
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Node / frontend
+node_modules/
+.next/
+out/
+build/
+.dist/
+.cache/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment files
+.env
+.env.local
+.env.*
+
+# Test / coverage
+coverage/
+htmlcov/
+.pytest_cache/
+*.cover
+*.coverage
+*.lcov
+
+# Misc
+*.bak
+*.tmp
+*.swp

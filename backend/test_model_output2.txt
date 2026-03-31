@@ -1,0 +1,5 @@
+FAILED mistralai/Mistral-7B-Instruct-v0.2 (Endpoint): Model mistralai/Mistral-7B-Instruct-v0.2 is not supported for task text-generation and provider featherless-ai. Supported task: conversational.
+FAILED mistralai/Mistral-7B-Instruct-v0.2 (Chat): (Request ID: Root=1-69cbf3b4-0e83197d01ff3a7074b8b7ce;a392c08c-f3e7-425b-9abc-9d19c3177780)
+
+Bad request:
+{'message': "The requested model 'mistralai/Mistral-7B-Instruct-v0.2' is not supported by any provider you have enabled.", 'type': 'invalid_request_error', 'param': 'model', 'code': 'model_not_supported'}

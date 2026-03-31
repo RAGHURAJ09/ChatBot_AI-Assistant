@@ -1,0 +1,5 @@
+FAILED meta-llama/Llama-3.2-1B-Instruct: Model meta-llama/Llama-3.2-1B-Instruct is not supported for task text-generation and provider novita. Supported task: conversational.
+FAILED meta-llama/Meta-Llama-3-8B-Instruct: Model meta-llama/Meta-Llama-3-8B-Instruct is not supported for task text-generation and provider novita. Supported task: conversational.
+FAILED google/gemma-2-2b-it: 
+FAILED Qwen/Qwen2.5-1.5B-Instruct: Model Qwen/Qwen2.5-1.5B-Instruct is not supported for task text-generation and provider featherless-ai. Supported task: conversational.
+FAILED mistralai/Mistral-Nemo-Instruct-2407: 
