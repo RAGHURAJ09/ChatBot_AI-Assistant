@@ -7,14 +7,20 @@ from langchain_community.vectorstores import Chroma
 from langchain_classic.chains import create_history_aware_retriever, create_retrieval_chain
 from langchain_classic.chains.combine_documents import create_stuff_documents_chain
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
+import os
 
 CHROMA_PATH = "./chroma_db"
 EMBEDDING_MODEL = "sentence-transformers/all-MiniLM-L6-v2"
 LLM_MODEL = "meta-llama/Meta-Llama-3-8B-Instruct"
 
+# Initialize components lazily or globally
 embeddings = HuggingFaceEmbeddings(model_name=EMBEDDING_MODEL)
 llm_endpoint = HuggingFaceEndpoint(repo_id=LLM_MODEL, max_new_tokens=1024, temperature=0.5)
 llm = ChatHuggingFace(llm=llm_endpoint)
+
+# Ensure vector store is initialized
+if not os.path.exists(CHROMA_PATH):
+    os.makedirs(CHROMA_PATH)
 vector_store = Chroma(persist_directory=CHROMA_PATH, embedding_function=embeddings)
 
 def process_pdf(file_path: str):
@@ -34,7 +40,7 @@ def process_youtube(url: str):
     return len(splits)
 
 def get_rag_chain():
-    retriever = vector_store.as_retriever()
+    retriever = vector_store.as_retriever(search_kwargs={"k": 3})
     
     contextualize_q_system_prompt = (
         "Given a chat history and the latest user question "
@@ -55,18 +61,16 @@ def get_rag_chain():
     )
 
     system_prompt = (
-        "You are a helpful and intelligent AI assistant. Always follow these rules:\n"
-        "1. LANGUAGE RULE: If the user writes in Devanagari script (Hindi) **or** explicitly asks for an answer in Hindi, respond entirely in Hindi. If the user does NOT request Hindi, answer in Hinglish – English sentences with occasional Hindi words. Do NOT switch languages mid‑answer.\n"
-        "2. DO NOT ECHO THE PROMPT: Never repeat the user's question as a title or heading. Just start answering immediately.\n"
-        "3. CASUAL CONVERSATIONS: For greetings, small talk, or simple questions (e.g. 'what is your name', 'tmko hindi aati h'), answer in 1‑2 sentences using the language determined by Rule 1. Do NOT use the structured format for these.\n"
-        "4. FOR EXPLANATIONS OR FACTUAL QUERIES: Give a clear answer (minimum 3‑5 lines). Use simple language like teaching a beginner. If technical, include real‑world examples. Use the language from Rule 1.\n"
-        "5. If the user explicitly asks for 'detail', 'in detail', or 'explain more', expand your previous answer, add examples, and add use cases. Keep it structured.\n"
-        "6. ONLY FOR SUBSTANTIVE FACTUAL EXPLANATIONS or DETAILED REQUESTS, use this exact format:\n\n"
-        "**SHORT ANSWER:**\n"
-        "<simple explanation>\n\n"
-        "**DETAILED EXPLANATION:**\n"
-        "<expanded explanation with examples>\n\n"
-        "Use the following pieces of retrieved context to answer the question if applicable:\n"
+        "You are a helpful, intelligent, and highly capable AI assistant.\n"
+        "### Conversational Guidelines:\n"
+        "1. **Tone & Style:** Be natural, conversational, and direct. Avoid rigid, awkward, or robotic phrasing. Provide helpful, clear, and easy-to-understand explanations.\n"
+        "2. **Language Matching (Crucial):** \n"
+        "   - If the user writes in English, reply in English.\n"
+        "   - If the user writes in Hinglish (Hindi written using the English alphabet, e.g., 'me smjh nii pa rha'), you MUST reply in natural Hinglish. Do NOT use proper Devanagari Hindi script and do NOT reply in pure English. Reply exactly the way an Indian would chat in Hinglish (e.g., 'Haan, main samajh sakta hu, chaliye dobara try karte hain...').\n"
+        "   - If the user writes in proper Hindi (Devanagari script), reply in proper Hindi.\n"
+        "3. **Formatting:** Use formatting like bullet points or bold text where it helps readability, but avoid unnecessary or dramatic headers.\n"
+        "4. **No Awkward Headers:** NEVER use headers like 'SAMAJHDAAR JAWAB', 'JAWAB:', or unnatural tags. Just start your answer naturally.\n\n"
+        "Use the following context if relevant:\n"
         "{context}"
     )
     qa_prompt = ChatPromptTemplate.from_messages(
